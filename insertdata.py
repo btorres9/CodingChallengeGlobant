@@ -12,7 +12,7 @@ USERDATA = os.getenv("USERDATA")
 PASSWORD = os.getenv("PASSWORD")
 DRIVER =  os.getenv("DRIVER")
 
-def insert_data():
+def insert_data(data_list):
     
     # Establecer la conexión
     conn = pyodbc.connect(
@@ -23,22 +23,25 @@ def insert_data():
     cursor = conn.cursor()
 
     # Consulta de inserción
-    insert_query = "INSERT INTO Stage.fact_employees(id,name,datetime,department_id,job_id)VALUES (?,?,?,?,?)"
+    
+    insert_query = "INSERT INTO stage.hired_employees(id,name,datetime,department_id,job_id)VALUES (?,?,?,?,?)"
 
-    # Datos a insertar
-    id = 4
-    name = "Emanuel Anchique"
-    datetime = "2021-11-07T02:48:42Z"
-    department_id = 4
-    job_id = 4
+    #Datos a insertar
+    # id = "2"
+    # name = "Bernardo Torres"
+    # datetime = "2021-11-07T02:48:42Z"
+    # department_id = "3"   
+    # job_id = "4"
 
-    # Ejecutar la consulta de inserción
-    cursor.execute(insert_query, (id, name, datetime,department_id,job_id))
+    #Ejecutar la consulta de inserción
+    for data in data_list:
+        cursor.execute(insert_query, (data["id"], data["name"], data["datetime"],data["department_id"],data["job_id"]))
+         # Confirmar la transacción
+        conn.commit()
 
-    # Confirmar la transacción
-    conn.commit()
-
-    # Cerrar la conexión
-    conn.close()
+        # Cerrar la conexión
+        conn.close()
+    
+   
 
 insert_data()
