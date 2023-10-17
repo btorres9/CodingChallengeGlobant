@@ -38,17 +38,28 @@ def insert():
     if columna == 'name':
     #Ejecutar la consulta de inserción
     # Consulta de inserción
-        insert_query = "INSERT INTO stage.hired_employees(id,name,datetime,department_id,job_id)VALUES (?,?,?,?,?)"
+        insert_query = "INSERT INTO stage.hired_employees(id, name, datetime, department_id, job_id) VALUES (?,?,?,?,?);"
         for data in data_list:
-            cursor.execute(insert_query, (data["id"], data["name"], data["datetime"],data["department_id"],data["job_id"]))
+            cursor.execute("SELECT id FROM stage.hired_employees WHERE id = ?", (data["id"],))
+            existing_record = cursor.fetchone()
+            if existing_record is None:
+                cursor.execute(insert_query, (data["id"], data["name"], data["datetime"], data["department_id"], data["job_id"]))
+
     elif columna == 'department':
         insert_query = "INSERT INTO stage.departments(id,department)VALUES (?,?)"
         for data in data_list:
-            cursor.execute(insert_query, (data["id"], data["department"]))
+            cursor.execute("SELECT id FROM stage.departments WHERE id = ?", (data["id"],))
+            existing_record = cursor.fetchone()
+            if existing_record is None:
+                cursor.execute(insert_query, (data["id"], data["department"]))
+    
     elif columna == 'job':
         insert_query = "INSERT INTO stage.jobs(id,job)VALUES (?,?)"
         for data in data_list:
-            cursor.execute(insert_query, (data["id"], data["job"]))
+            cursor.execute("SELECT id FROM stage.jobs WHERE id = ?", (data["id"],))
+            existing_record = cursor.fetchone()
+            if existing_record is None:
+                cursor.execute(insert_query, (data["id"], data["job"]))
     else:
          print("No llegó ningun archivo.")
 
