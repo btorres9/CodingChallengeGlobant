@@ -1,0 +1,16 @@
+WITH BASE AS
+(
+    SELECT departments.id, COALESCE(department, 'N/A') AS department, COUNT(hired_employees.id) as hired
+    FROM [stage].[hired_employees]
+    LEFT JOIN [stage].[departments] ON hired_employees.department_id = departments.id
+    LEFT JOIN [stage].[jobs] ON hired_employees.job_id = jobs.id
+    WHERE CONVERT(DATE, datetime) BETWEEN '2021-01-01' AND '2021-12-31'
+    GROUP BY departments.id, department
+)
+SELECT departments.id, department, COUNT(hired_employees.id) as hired
+FROM [stage].[hired_employees]
+LEFT JOIN [stage].[departments]  ON hired_employees.department_id = departments.id
+LEFT JOIN [stage].[jobs] ON hired_employees.job_id = jobs.id
+GROUP BY departments.id, department
+HAVING COUNT(hired_employees.id) > (SELECT SUM(hired) / CAST(COUNT(department) AS FLOAT) FROM BASE)
+ORDER BY hired DESC;

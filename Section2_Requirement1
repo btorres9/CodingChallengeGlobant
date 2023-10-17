@@ -1,0 +1,19 @@
+WITH BASE AS 
+(
+    SELECT department,
+           job,
+           CASE WHEN CONVERT(DATE, datetime) BETWEEN '2021-01-01' AND '2021-03-31' THEN 1 ELSE 0 END AS Q1,
+           CASE WHEN CONVERT(DATE, datetime) BETWEEN '2021-04-01' AND '2021-06-30' THEN 1 ELSE 0 END AS Q2,
+           CASE WHEN CONVERT(DATE, datetime) BETWEEN '2021-07-01' AND '2021-09-30' THEN 1 ELSE 0 END AS Q3,
+           CASE WHEN CONVERT(DATE, datetime) BETWEEN '2021-10-01' AND '2021-12-31' THEN 1 ELSE 0 END AS Q4
+    FROM [stage].[hired_employees]                    
+    LEFT JOIN [stage].[departments]           
+    ON [stage].[hired_employees].department_id = departments.id
+    LEFT JOIN [stage].[jobs]                   
+    ON hired_employees.job_id = jobs.id
+)
+SELECT department, job, SUM(Q1) AS Q1, SUM(Q2) AS Q2, SUM(Q3) AS Q3, SUM(Q4) AS Q4
+FROM BASE
+GROUP BY department, job
+ORDER BY department, job;
+
