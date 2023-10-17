@@ -17,6 +17,10 @@ DRIVER =  os.getenv("DRIVER")
 
 app=Flask(__name__)
 
+@app.route("/")
+def root():
+    return("Hello Word")
+
 @app.route("/test",methods=['POST'])
 def insert():
     data=request.get_json()
